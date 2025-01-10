@@ -20,10 +20,24 @@ def calculo ():
 
     notafinal_str= str(notafinal)
     notas_alumnos= "notas_alumnos.txt"
+    datos_a_guardar = f"{nombre} {dni} {nota1} {nota2} {notafinal_str}\n"
 
+    # Leer el contenido existente del archivo
+    try:
+        with open(notas_alumnos, 'r') as archivo:
+            lineas = archivo.readlines()
+    except FileNotFoundError:
+        lineas = []
+
+    # Sobrescribir solo los datos del alumno con el mismo nombre
     with open(notas_alumnos, 'w') as archivo:
-        datos_a_guardar = f"{nombre} {dni} {nota1} {nota2} {notafinal_str}\n"
-        archivo.write(datos_a_guardar)
+        for linea in lineas:
+            if linea.startswith(nombre):
+                archivo.write(datos_a_guardar)
+            else:
+                archivo.write(linea)
+        if not any(linea.startswith(nombre) for linea in lineas):
+            archivo.write(datos_a_guardar)
 
     print("Datos guardados exitosamente en", notas_alumnos)
 
